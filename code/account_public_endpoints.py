@@ -7,11 +7,12 @@ def lambda_handler(event, context):
     addresses = ec2.describe_addresses()
     for eip_dict in addresses['Addresses']:
         response_addresses.append(eip_dict['PublicIp'])
+    print(response_addresses)
     response = {
         "statusCode": 200,
         "headers": {
             "Access-Control-Allow-Origin": "*",
         },
-        "body": response_addresses
+        "body": "response_addresses"
     }
     return(response)
