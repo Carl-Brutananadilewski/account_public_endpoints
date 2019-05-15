@@ -30,7 +30,17 @@ node {
                 script: "aws lambda publish-version --function-name ${functionName} --region ${region} | jq -r '.Version'",
                 returnStdout: true
             )
-            sh "aws lambda update-alias --function-name ${functionName} --name production --region ${region} --function-version ${lambdaVersion}"
+            sh "aws lambda update-alias --function-name ${functionName} --name prod --region ${region} --function-version ${lambdaVersion}"
+        }
+    }
+
+    if (env.BRANCH_NAME == 'staging') {
+        stage('Publish') {
+            def lambdaVersion = sh(
+                script: "aws lambda publish-version --function-name ${functionName} --region ${region} | jq -r '.Version'",
+                returnStdout: true
+            )
+            sh "aws lambda update-alias --function-name ${functionName} --name staging --region ${region} --function-version ${lambdaVersion}"
         }
     }
 }
