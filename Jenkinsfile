@@ -9,9 +9,7 @@ node {
 
 
     stage('Build'){
-        sh "cd code"
-        sh "zip -r ${commitID()}.zip *"
-        sh "cd .."
+        sh "zip ${commitID()}.zip code/*"
 
     }
 
