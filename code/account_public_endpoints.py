@@ -39,6 +39,17 @@ def lambda_handler(event, context):
         region_ips = get_ips(region)
         if region_ips:
             response_body['elastic_ips'][region] = region_ips
+        else:
+            return(
+                {
+                    "statusCode": 404,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                    "body": f"Region {region} not found"
+                }
+            )
+
 
     response = {
         "statusCode": 200,
