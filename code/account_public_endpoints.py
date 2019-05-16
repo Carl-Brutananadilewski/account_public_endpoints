@@ -46,7 +46,7 @@ def lambda_handler(event, context):
                     "headers": {
                         "Access-Control-Allow-Origin": "*",
                     },
-                    "body": f"Region {region} not found"
+                    "body": f"Region {region} not found\n"
                 }
             )
 
