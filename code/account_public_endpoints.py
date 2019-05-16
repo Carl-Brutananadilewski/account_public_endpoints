@@ -9,16 +9,20 @@ def lambda_handler(event, context):
                     "elastic_ips": ""
     }
     regions = []
-    try:
 
+    if event['multiValueQueryStringParameters']:
         if 'regions' in event['multiValueQueryStringParameters']:
             regions = event['multiValueQueryStringParameters']['regions']
-        else:
+    elif event['queryStringParameters']:
+        if 'regions' in event['queryStringParameters']:
             regions = event['queryStringParameters']['regions']
-    except TypeError:
+    else:
         regions_describe = ec2.describe_regions()
         for region_json in regions_describe['Regions']:
             regions.append(region_json['RegionName'])
+
+
+
     print(regions)
 
     response_addresses = []
