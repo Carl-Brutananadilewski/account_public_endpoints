@@ -3,8 +3,17 @@ import json
 
 ec2 = boto3.client('ec2')
 
+def get_ips(region):
+    get_ips_response_addresses=[]
+    get_ips_session = boto3.session.Session(region_name=region)
+    get_ips_client = get_ips_session.client(ec2)
+    get_ips_account_addresses = ec2.describe_addresses()
+    for eip_dict in get_ips_account_addresses['Addresses']:
+        get_ips_response_addresses.append(eip_dict['PublicIp'])
+    return get_ips_response_addresses
+
 def lambda_handler(event, context):
-#    print(event)
+    
     response_body = {
                     "elastic_ips": ""
     }
@@ -22,14 +31,9 @@ def lambda_handler(event, context):
             regions.append(region_json['RegionName'])
 
 
+    for region in regions:
+        response_body['elastic_ips'][region] = get_ips(region)
 
-    print(regions)
-
-    response_addresses = []
-    account_addresses = ec2.describe_addresses()
-    for eip_dict in account_addresses['Addresses']:
-        response_addresses.append(eip_dict['PublicIp'])
-    response_body["elastic_ips"]=response_addresses
     response = {
         "statusCode": 200,
         "headers": {
