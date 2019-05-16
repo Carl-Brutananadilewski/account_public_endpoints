@@ -5,21 +5,22 @@ ec2 = boto3.client('ec2')
 
 def lambda_handler(event, context):
 #    print(event)
+    response_body = {
+                    "elastic_ips": ""
+    }
     regions = []
-    if 'regions' in event['queryStringParameters']:
+    try:
+
         if 'regions' in event['multiValueQueryStringParameters']:
             regions = event['multiValueQueryStringParameters']['regions']
         else:
             regions = event['queryStringParameters']['regions']
-    else:
+    except TypeError:
         regions_describe = ec2.describe_regions()
         for region_json in regions_describe['Regions']:
             regions.append(region_json['RegionName'])
-
     print(regions)
-    response_body = {
-                    "elastic_ips": ""
-    }
+
     response_addresses = []
     account_addresses = ec2.describe_addresses()
     for eip_dict in account_addresses['Addresses']:
