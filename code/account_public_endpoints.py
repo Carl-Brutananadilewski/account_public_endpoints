@@ -4,7 +4,19 @@ import json
 ec2 = boto3.client('ec2')
 
 def lambda_handler(event, context):
-    print(event)
+#    print(event)
+    regions = []
+    if 'regions' in event['queryStringParameters']:
+        if 'regions' in event['multiValueQueryStringParameters']:
+            regions = event['multiValueQueryStringParameters']['regions']
+        else:
+            regions = event['queryStringParameters']['regions']
+    else:
+        regions_describe = ec2.describe_regions()
+        for region_json in regions_describe['Regions']:
+            regions.append(region_json['RegionName'])
+
+    print(regions)
     response_body = {
                     "elastic_ips": ""
     }
