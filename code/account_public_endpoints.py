@@ -22,6 +22,10 @@ def lambda_handler(event, context):
                     "elastic_ips": {}
     }
     regions = []
+    regions_all = []
+    regions_describe = ec2.describe_regions()
+    for region_json in regions_describe['Regions']:
+        regions_all.append(region_json['RegionName'])
 
     if event['multiValueQueryStringParameters']:
         if 'regions' in event['multiValueQueryStringParameters']:
@@ -29,26 +33,26 @@ def lambda_handler(event, context):
     elif event['queryStringParameters']:
         if 'regions' in event['queryStringParameters']:
             regions = event['queryStringParameters']['regions']
+
+    if regions:
+        for region in regions:
+            if region not in regions_all:
+                return(
+                    {
+                        "statusCode": 404,
+                        "headers": {
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                        "body": f"Region {region} not found\n"
+                    }
+                )
     else:
-        regions_describe = ec2.describe_regions()
-        for region_json in regions_describe['Regions']:
-            regions.append(region_json['RegionName'])
+        regions = regions_all
 
 
     for region in regions:
-        region_ips = get_ips(region)
-        if region_ips:
-            response_body['elastic_ips'][region] = region_ips
-        else:
-            return(
-                {
-                    "statusCode": 404,
-                    "headers": {
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                    "body": f"Region {region} not found\n"
-                }
-            )
+        response_body['elastic_ips'][region] = get_ips(region)
+
 
 
     response = {
