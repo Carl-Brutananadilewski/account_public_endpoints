@@ -28,11 +28,11 @@ def lambda_handler(event, context):
         regions_all.append(region_json['RegionName'])
 
     if event['multiValueQueryStringParameters']:
-        if 'regions' in event['multiValueQueryStringParameters']:
-            regions = event['multiValueQueryStringParameters']['regions']
+        if 'region' in event['multiValueQueryStringParameters']:
+            regions = event['multiValueQueryStringParameters']['region']
     elif event['queryStringParameters']:
-        if 'regions' in event['queryStringParameters']:
-            regions = event['queryStringParameters']['regions']
+        if 'region' in event['queryStringParameters']:
+            regions = event['queryStringParameters']['region']
 
     if regions:
         for region in regions:
