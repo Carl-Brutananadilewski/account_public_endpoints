@@ -10,6 +10,8 @@ def get_ips(region):
     get_ips_account_addresses = ec2.describe_addresses()
     for eip_dict in get_ips_account_addresses['Addresses']:
         get_ips_response_addresses.append(eip_dict['PublicIp'])
+    print[region]
+    print[get_ips_response_addresses]
     return get_ips_response_addresses
 
 def lambda_handler(event, context):
