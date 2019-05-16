@@ -11,7 +11,7 @@ def get_ips(region):
     try:
         get_ips_account_addresses = get_ips_client.describe_addresses()
     except EndpointConnectionError:
-        continue
+        return 0
     for eip_dict in get_ips_account_addresses['Addresses']:
         get_ips_response_addresses.append(eip_dict['PublicIp'])
     return get_ips_response_addresses
@@ -36,7 +36,9 @@ def lambda_handler(event, context):
 
 
     for region in regions:
-        response_body['elastic_ips'][region] = get_ips(region)
+        region_ips = get_ips(region)
+        if region_ips:
+            response_body['elastic_ips'][region] = region_ips
 
     response = {
         "statusCode": 200,
