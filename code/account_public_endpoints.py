@@ -15,7 +15,7 @@ def get_ips(region):
 def lambda_handler(event, context):
 
     response_body = {
-                    "elastic_ips": ""
+                    "elastic_ips": {}
     }
     regions = []
 
