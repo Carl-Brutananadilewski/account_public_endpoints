@@ -3,6 +3,7 @@ import boto3
 ec2 = boto3.client('ec2')
 
 def lambda_handler(event, context):
+    print(event)
     response_addresses = []
     addresses = ec2.describe_addresses()
     for eip_dict in addresses['Addresses']:
